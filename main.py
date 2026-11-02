@@ -5,20 +5,38 @@ from services.iam import iam_operations_list
 from services.lambda_service import lambda_operations_list
 from services.apigateway import apigateway_operations_list
 
+import subprocess
+import os
+
+
+# def account_information():
+#     result = run_aws_command(
+#         ["aws", "sts", "get-caller-identity"]
+#     )
+
+#     if result["success"]:
+#         print(result["output"])
+#     else:
+#         print("AWS CLI Error:")
+#         print(result["error"])
 
 def account_information():
-    result = run_aws_command(
-        ["aws", "sts", "get-caller-identity"]
-    )
-
-    if result["success"]:
-        print(result["output"])
+    result = subprocess.run(
+            ["aws", "sts", "get-caller-identity"],
+            capture_output=True,
+            text=True
+        )
+    
+    if result.returncode == 0:
+            print(result.stdout)
+            print("✓ Account information retrieved successfully.")
     else:
-        print("AWS CLI Error:")
-        print(result["error"])
+            print(result.stderr)
+    
 
 
 def main():
+    os.system("cls" if os.name == "nt" else "clear")
     while True:
         print("\n======================================")
         print("       AWS AUTOMATION DASHBOARD")

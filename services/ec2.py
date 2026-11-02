@@ -1,12 +1,25 @@
-#This is the ec2 code
+# This is the EC2 code
 import subprocess
 import os
 import msvcrt
 
+
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def pause_and_clear():
+    print("\nPress any key to continue...")
+    msvcrt.getch()
+    clear_screen()
+
+
 def ec2_operations_list():
+    clear_screen()
+
     while True:
         print("\n======================================")
-        print("            EC2 MANAGEMENT             ")
+        print("            EC2 MANAGEMENT")
         print("======================================")
         print("[1] List Instances")
         print("[2] Start Instance")
@@ -15,185 +28,194 @@ def ec2_operations_list():
         print("[5] Launch Instance")
         print("[6] Terminate Instance")
         print("[7] Back to Main Menu")
-        print("=======================================")
+        print("======================================")
 
-        choice = int(input("Enter your choice: ").strip())
+        choice = input("\nEnter your choice: ").strip()
 
-        if choice == 1:
-            print("EC2 Instance List")
+        if choice == "1":
             list_instance()
-        elif choice == 2:
+        elif choice == "2":
             start_instance()
-        elif choice == 3:
+        elif choice == "3":
             stop_instance()
-        elif choice == 4:
+        elif choice == "4":
             reboot_instance()
-        elif choice == 5:
+        elif choice == "5":
             launch_instance()
-        elif choice == 6:
+        elif choice == "6":
             terminate_instance()
-        elif choice == 7:
-            print("Exit")
+        elif choice == "7":
+            clear_screen()
             break
         else:
-            print("Invalid choice. Enter 1-7.")
+            print("\nInvalid choice. Enter 1-7.")
 
 
 def list_instance():
 
-    # os.system("cls" if os.name == "nt" else "clear")
-
+    clear_screen()
 
     print("\n============================")
-    print("     LIST INSTANCE      ")
+    print("       LIST INSTANCES")
     print("============================")
-    print("Showing instance...")
+    print("\nShowing instances...\n")
 
-    result = subprocess.run (
+    result = subprocess.run(
         [
-        "aws", "ec2", "describe-instances",
-        "--query",
-        "Reservations[].Instances[].[InstanceId,State.Name,InstanceType,PrivateIpAddress]",
-        "--output", "table"
+            "aws", "ec2", "describe-instances",
+            "--query",
+            "Reservations[].Instances[].[InstanceId,State.Name,InstanceType,PrivateIpAddress]",
+            "--output", "table"
         ],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
     else:
         print(result.stderr)
 
-    print("============================")
-    print("\nPress any key to continue...")
-    msvcrt.getch()
-    # input("\nPress Enter to continue...")
+    pause_and_clear()
+
 
 def start_instance():
 
-    print("\n============================")
-    print("     START EC2 INSTANCE      ")
-    print("============================")
-    instance_id = input("Enter Instance ID: ")
-    print("Starting instance...")
+    clear_screen()
 
-    result = subprocess.run (
+    print("\n============================")
+    print("      START INSTANCE")
+    print("============================")
+    print("\nStarting EC2 instance...\n")
+
+    instance_id = input("Enter Instance ID: ").strip()
+
+    result = subprocess.run(
         ["aws", "ec2", "start-instances", "--instance-ids", instance_id],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Instance start request successful.")
-
+        print("\n✓ Instance start request successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
 
 
-
-    
 def stop_instance():
 
-    print("\n============================")
-    print("     STOP EC2 INSTANCE      ")
-    print("============================")
-    instance_id = input("Enter Instance ID: ")
-    print("Stopping instance...")
+    clear_screen()
 
-    result = subprocess.run (
+    print("\n============================")
+    print("       STOP INSTANCE")
+    print("============================")
+    print("\nStopping EC2 instance...\n")
+
+    instance_id = input("Enter Instance ID: ").strip()
+
+    result = subprocess.run(
         ["aws", "ec2", "stop-instances", "--instance-ids", instance_id],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Instance stoped request successful.")
-
+        print("\n✓ Instance stop request successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
-
+    pause_and_clear()
 
 
 def reboot_instance():
 
-    print("\n============================")
-    print("     REBOOT EC2 INSTANCE      ")
-    print("============================")
-    instance_id = input("Enter Instance ID: ")
-    print("Rebooting instance...")
+    clear_screen()
 
-    result = subprocess.run (
+    print("\n============================")
+    print("      REBOOT INSTANCE")
+    print("============================")
+    print("\nRebooting EC2 instance...\n")
+
+    instance_id = input("Enter Instance ID: ").strip()
+
+    result = subprocess.run(
         ["aws", "ec2", "reboot-instances", "--instance-ids", instance_id],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Instance reboot request successful.")
-
+        print("\n✓ Instance reboot request successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
-
+    pause_and_clear()
 
 
 def launch_instance():
 
-    print("\n============================")
-    print("     LAUNCH EC2 INSTANCE      ")
-    print("============================")
-    ami_id = input("AMI ID: ")
-    instance_type = input("Instance type: ")
-    # key_pair = input("Key pair: ")
-    # security_grp = input("Security group: ")
-    # subnet_id = input("Subnet ID: ")
-    print("Launching instance...")
+    clear_screen()
 
-    result = subprocess.run (
-        ["aws", "ec2", "run-instances", "--image-id", ami_id, "--instance-type", instance_type],
+    print("\n============================")
+    print("       LAUNCH INSTANCE")
+    print("============================")
+    print("\nLaunching EC2 instance...\n")
+
+    ami_id = input("AMI ID: ").strip()
+    instance_type = input("Instance type: ").strip()
+
+    print("\nLaunching instance...\n")
+
+    result = subprocess.run(
+        [
+            "aws", "ec2", "run-instances",
+            "--image-id", ami_id,
+            "--instance-type", instance_type
+        ],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Instance launched successful.")
-
+        print("\n✓ Instance launch request successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
-
+    pause_and_clear()
 
 
 def terminate_instance():
 
-    print("\n============================")
-    print("     TERMINATE EC2 INSTANCE      ")
-    print("============================")
-    instance_id = input("Enter Instance ID: ")
-    print("Terminating instance...")
+    clear_screen()
 
-    result = subprocess.run (
+    print("\n============================")
+    print("      TERMINATE INSTANCE")
+    print("============================")
+    print("\nTerminating EC2 instance...\n")
+
+    instance_id = input("Enter Instance ID: ").strip()
+
+    result = subprocess.run(
         ["aws", "ec2", "terminate-instances", "--instance-ids", instance_id],
         capture_output=True,
         text=True
     )
-    
+
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Instance termination request successful.")
-
+        print("\n✓ Instance termination request successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
