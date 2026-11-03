@@ -51,6 +51,30 @@ def ec2_operations_list():
             print("\nInvalid choice. Enter 1-7.")
 
 
+def show_all_instnaces():
+    # print("\n============================")
+    # print("       ALL THE INSTANCES")
+    # print("============================")
+    print("Waiting for instances...\n")
+
+    result = subprocess.run(
+        [
+            "aws", "ec2", "describe-instances",
+            "--query",
+            "Reservations[].Instances[].[InstanceId,State.Name,InstanceType,PrivateIpAddress]",
+            "--output", "table"
+        ],
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode == 0:
+        print(result.stdout)
+    else:
+        print(result.stderr)
+
+
+
 def list_instance():
 
     clear_screen()
@@ -85,10 +109,12 @@ def start_instance():
 
     print("\n============================")
     print("      START INSTANCE")
-    print("============================")
-    print("\nStarting EC2 instance...\n")
+    print("============================\n")
+
+    show_all_instnaces()
 
     instance_id = input("Enter Instance ID: ").strip()
+    print("\nStarting EC2 instance...\n")
 
     result = subprocess.run(
         ["aws", "ec2", "start-instances", "--instance-ids", instance_id],
@@ -112,10 +138,12 @@ def stop_instance():
 
     print("\n============================")
     print("       STOP INSTANCE")
-    print("============================")
-    print("\nStopping EC2 instance...\n")
+    print("============================\n")
+
+    show_all_instnaces()
 
     instance_id = input("Enter Instance ID: ").strip()
+    print("\nStopping EC2 instance...\n")
 
     result = subprocess.run(
         ["aws", "ec2", "stop-instances", "--instance-ids", instance_id],
@@ -139,10 +167,12 @@ def reboot_instance():
 
     print("\n============================")
     print("      REBOOT INSTANCE")
-    print("============================")
-    print("\nRebooting EC2 instance...\n")
+    print("============================\n")
+
+    show_all_instnaces()
 
     instance_id = input("Enter Instance ID: ").strip()
+    print("\nRebooting EC2 instance...\n")
 
     result = subprocess.run(
         ["aws", "ec2", "reboot-instances", "--instance-ids", instance_id],
@@ -166,11 +196,11 @@ def launch_instance():
 
     print("\n============================")
     print("       LAUNCH INSTANCE")
-    print("============================")
-    print("\nLaunching EC2 instance...\n")
+    print("============================\n")
 
     ami_id = input("AMI ID: ").strip()
     instance_type = input("Instance type: ").strip()
+    print("\nLaunching EC2 instance...\n")
 
     print("\nLaunching instance...\n")
 
@@ -200,10 +230,12 @@ def terminate_instance():
 
     print("\n============================")
     print("      TERMINATE INSTANCE")
-    print("============================")
-    print("\nTerminating EC2 instance...\n")
+    print("============================\n")
+
+    show_all_instnaces()
 
     instance_id = input("Enter Instance ID: ").strip()
+    print("\nTerminating EC2 instance...\n")
 
     result = subprocess.run(
         ["aws", "ec2", "terminate-instances", "--instance-ids", instance_id],

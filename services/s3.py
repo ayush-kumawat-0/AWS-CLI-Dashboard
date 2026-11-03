@@ -1,11 +1,26 @@
-#This is the s3 code
+# This is the S3 code
 import subprocess
+import os
+import msvcrt
+
+
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
+
+
+def pause_and_clear():
+    print("\nPress any key to continue...")
+    msvcrt.getch()
+    clear_screen()
+
 
 def s3_operations_list():
+    clear_screen()
+
     while True:
         print("\n======================================")
-        print("            S3 MANAGEMENT             ")
-        print("=======================================")
+        print("             S3 MANAGEMENT")
+        print("======================================")
         print("[1] List Buckets")
         print("[2] Create Bucket")
         print("[3] Delete Bucket")
@@ -14,45 +29,41 @@ def s3_operations_list():
         print("[6] Download Object")
         print("[7] Delete Object")
         print("[8] Back to Main Menu")
-        print("=======================================")
+        print("======================================")
 
-        choice = int(input("Enter your choice: ").strip())
+        choice = input("\nEnter your choice: ").strip()
 
-        if choice == 1:
-            print("List Buckets")
-            list_buckerts()
-        elif choice == 2:
-            print("Create Bucket")
+        if choice == "1":
+            list_buckets()
+        elif choice == "2":
             create_bucket()
-        elif choice == 3:
-            print("Delete Bucket")
+        elif choice == "3":
             delete_bucket()
-        elif choice == 4:
-            print("List Object")
+        elif choice == "4":
             list_object()
-        elif choice == 5:
-            print("Upload Objec")
+        elif choice == "5":
             upload_object()
-        elif choice == 6:
-            print("Download Object")
+        elif choice == "6":
             download_object()
-        elif choice == 7:
-            print("Delete Object")
+        elif choice == "7":
             delete_object()
-        elif choice == 8:
-            print("Exit")
+        elif choice == "8":
+            clear_screen()
             break
         else:
-            print("Invalid choice. Enter 1-8.")
+            print("\nInvalid choice. Enter 1-8.")
 
 
-def list_buckerts():
+def list_buckets():
+
+    clear_screen()
+
     print("\n============================")
-    print("     LIST BUCKETS      ")
+    print("       LIST BUCKETS")
     print("============================")
-    print("Showing Buckets...")
+    print("\nShowing buckets...\n")
 
-    result = subprocess.run (
+    result = subprocess.run(
         ["aws", "s3", "ls"],
         capture_output=True,
         text=True
@@ -60,20 +71,25 @@ def list_buckerts():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Bucket listing successfully.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
+
 
 def create_bucket():
-    print("\n============================")
-    print("     CREATE BUCKET      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    print("Creating bucket...")
 
-    result = subprocess.run (
+    clear_screen()
+
+    print("\n============================")
+    print("       CREATE BUCKET")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    print("\nCreating S3 bucket...\n")
+
+    result = subprocess.run(
         ["aws", "s3", "mb", f"s3://{bucket_name}"],
         capture_output=True,
         text=True
@@ -81,20 +97,26 @@ def create_bucket():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Bucket creation successful.")
+        print("\n✓ Bucket creation successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("\n============================")
+    pause_and_clear()
+
 
 def delete_bucket():
-    print("\n============================")
-    print("     DELETE BUCKET      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    print("Deleting bucket...")
 
-    result = subprocess.run (
+    clear_screen()
+
+    print("\n============================")
+    print("       DELETE BUCKET")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    print("\nDeleting S3 bucket...\n")
+
+    result = subprocess.run(
         ["aws", "s3", "rb", f"s3://{bucket_name}"],
         capture_output=True,
         text=True
@@ -102,21 +124,26 @@ def delete_bucket():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Bucket deletion successful.")
+        print("\n✓ Bucket deletion successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
 
 
 def list_object():
-    print("\n============================")
-    print("     LIST OBJECTS      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    print("Listing objects...")
 
-    result = subprocess.run (
+    clear_screen()
+
+    print("\n============================")
+    print("       LIST OBJECTS")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    print("\nListing objects...\n")
+
+    result = subprocess.run(
         ["aws", "s3", "ls", f"s3://{bucket_name}"],
         capture_output=True,
         text=True
@@ -124,23 +151,27 @@ def list_object():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Object listing successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
-
+    pause_and_clear()
 
 
 def upload_object():
-    print("\n============================")
-    print("     UPLOAD OBJECT      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    file_path = input("Enter File Path: ")
-    print("Uploading object...")
 
-    result = subprocess.run (
+    clear_screen()
+
+    print("\n============================")
+    print("       UPLOAD OBJECT")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    file_path = input("Enter File Path: ").strip()
+
+    print("\nUploading object...\n")
+
+    result = subprocess.run(
         ["aws", "s3", "cp", file_path, f"s3://{bucket_name}/"],
         capture_output=True,
         text=True
@@ -148,46 +179,62 @@ def upload_object():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Object upload successful.")
+        print("\n✓ Object upload successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
 
 
 def download_object():
-    print("\n============================")
-    print("     DOWNLOAD OBJECT      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    object_key = input("Enter Object Key: ")
-    destination_path = input("Enter Destination Path: ")
-    print("Downloading object...")
 
-    result = subprocess.run (
-        ["aws", "s3", "cp", f"s3://{bucket_name}/{object_key}", destination_path],
+    clear_screen()
+
+    print("\n============================")
+    print("      DOWNLOAD OBJECT")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    object_key = input("Enter Object Key: ").strip()
+    destination_path = input("Enter Destination Path: ").strip()
+
+    print("\nDownloading object...\n")
+
+    result = subprocess.run(
+        [
+            "aws", "s3", "cp",
+            f"s3://{bucket_name}/{object_key}",
+            destination_path
+        ],
         capture_output=True,
         text=True
     )
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Object download successful.")
+        print("\n✓ Object download successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
+    pause_and_clear()
 
 
 def delete_object():
-    print("\n============================")
-    print("     DELETE OBJECT      ")
-    print("============================")
-    bucket_name = input("Enter Bucket Name: ")
-    object_key = input("Enter Object Key: ")
-    print("Deleting object...")
 
-    result = subprocess.run (
+    clear_screen()
+
+    print("\n============================")
+    print("       DELETE OBJECT")
+    print("============================\n")
+
+    bucket_name = input("Enter Bucket Name: ").strip()
+    object_key = input("Enter Object Key: ").strip()
+
+    print("\nDeleting object...\n")
+
+    result = subprocess.run(
         ["aws", "s3", "rm", f"s3://{bucket_name}/{object_key}"],
         capture_output=True,
         text=True
@@ -195,11 +242,9 @@ def delete_object():
 
     if result.returncode == 0:
         print(result.stdout)
-        print("✓ Object deletion successful.")
+        print("\n✓ Object deletion successful.")
     else:
+        print("\nAWS CLI Error:")
         print(result.stderr)
 
-    print("============================")
-
-
-
+    pause_and_clear()
