@@ -151,22 +151,29 @@ def delete_bucket():
     show_all_buckets()
 
     bucket_name = input(f"\n{BLUE}Enter the name of the bucket to delete: {RESET}").strip()
-    print(f"\n{YELLOW}Deleting your S3 bucket...{RESET}\n")
 
-    result = subprocess.run(
-        ["aws", "s3", "rb", f"s3://{bucket_name}"],
-        capture_output=True,
-        text=True
-    )
+    confirmation = input(f"{BLUE}Are you sure you want to continue? (y/n): {RESET}").strip().lower()
 
-    if result.returncode == 0:
-        print(f"{WHITE}{result.stdout}{RESET}")
-        print(f"\n{RED}{BOLD}✓ Bucket deletion successful.{RESET}")
+    if confirmation == "y":
+        print(f"\n{YELLOW}Deleting your S3 bucket...{RESET}\n")
+
+        result = subprocess.run(
+            ["aws", "s3", "rb", f"s3://{bucket_name}"],
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode == 0:
+            print(f"{WHITE}{result.stdout}{RESET}")
+            print(f"\n{RED}{BOLD}✓ Bucket deletion successful.{RESET}")
+        else:
+            print(f"\n{RED}AWS CLI Error:")
+            print(f"{result.stderr}{RESET}")
+
+        pause_and_clear()
+
     else:
-        print(f"\n{RED}AWS CLI Error:")
-        print(f"{result.stderr}{RESET}")
-
-    pause_and_clear()
+            print(f"\n{YELLOW}Bucket deletion cancelled.{RESET}")
 
 
 def list_object():
@@ -307,21 +314,28 @@ def delete_object():
     show_all_objects(bucket_name)
     object_key = input(f"{BLUE}Enter the object key to delete (e.g., images/photo.png): {RESET}").strip()
 
-    print(f"\n{YELLOW}Deleting object from S3...{RESET}\n")
+    confirmation = input(f"{BLUE}Are you sure you want to continue? (y/n): {RESET}").strip().lower()
 
-    result = subprocess.run(
-        # ["aws", "s3", "rm", f"s3://{bucket_name}/{object_key}"],
-        ["aws", "s3api", "delete-object", "--bucket", bucket_name, "--key",object_key],
+    if confirmation == "y":
 
-        capture_output=True,
-        text=True
-    )
+        print(f"\n{YELLOW}Deleting object from S3...{RESET}\n")
 
-    if result.returncode == 0:
-        print(f"{WHITE}{result.stdout}{RESET}")
-        print(f"\n{RED}{BOLD}✓ Object deleted successfully.{RESET}")
+        result = subprocess.run(
+            # ["aws", "s3", "rm", f"s3://{bucket_name}/{object_key}"],
+            ["aws", "s3api", "delete-object", "--bucket", bucket_name, "--key",object_key],
+
+            capture_output=True,
+            text=True
+        )
+
+        if result.returncode == 0:
+            print(f"{WHITE}{result.stdout}{RESET}")
+            print(f"\n{RED}{BOLD}✓ Object deleted successfully.{RESET}")
+        else:
+            print(f"\n{RED}AWS CLI Error:")
+            print(f"{result.stderr}{RESET}")
+
+        pause_and_clear()
+
     else:
-        print(f"\n{RED}AWS CLI Error:")
-        print(f"{result.stderr}{RESET}")
-
-    pause_and_clear()
+        print(f"\n{YELLOW}Object deletion cancelled.{RESET}")
