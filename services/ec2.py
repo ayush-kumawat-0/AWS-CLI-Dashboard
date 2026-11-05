@@ -133,7 +133,7 @@ def start_instance():
     print(f"\n{YELLOW}Starting EC2 instance...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "ec2", "start-instances", "--instance-ids", instance_id],
+        ["aws", "ec2", "start-instances", "--instance-ids", instance_id,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -162,7 +162,7 @@ def stop_instance():
     print(f"\n{YELLOW}Stopping EC2 instance...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "ec2", "stop-instances", "--instance-ids", instance_id],
+        ["aws", "ec2", "stop-instances", "--instance-ids", instance_id,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -191,7 +191,7 @@ def reboot_instance():
     print(f"\n{YELLOW}Rebooting EC2 instance...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "ec2", "reboot-instances", "--instance-ids", instance_id],
+        ["aws", "ec2", "reboot-instances", "--instance-ids", instance_id,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -223,7 +223,7 @@ def launch_instance():
         [
             "aws", "ec2", "run-instances",
             "--image-id", ami_id,
-            "--instance-type", instance_type
+            "--instance-type", instance_type,"--output", "table"
         ],
         capture_output=True,
         text=True
@@ -253,7 +253,7 @@ def terminate_instance():
     print(f"\n{YELLOW}Terminating EC2 instance...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "ec2", "terminate-instances", "--instance-ids", instance_id],
+        ["aws", "ec2", "terminate-instances", "--instance-ids", instance_id,"--output", "table"],
         capture_output=True,
         text=True
     )

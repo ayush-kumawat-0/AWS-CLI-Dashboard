@@ -17,19 +17,17 @@ GREY = "\033[90m"
 BOLD = "\033[1m"
 
 
-# Clear terminal screen
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-# Pause before returning to the menu
 def pause_and_clear():
     print(f"\n{GREY}Press any key to continue...{RESET}")
     msvcrt.getch()
     clear_screen()
 
 
-# Display IAM management menu
+
 def iam_operations_list():
 
     clear_screen()
@@ -89,6 +87,22 @@ def iam_operations_list():
         print(f"{GREEN}Returning to the main program...{RESET}")
 
 
+def show_all_users():
+    print(f"{YELLOW}Fetching available IAM users...{RESET}\n")
+    
+    result = subprocess.run(
+        ["aws" , "iam", "list-users", "--query" , "Users[].{Username:UserName,UserID:UserId,Created:CreateDate}","--output", "table"],
+        capture_output=True,
+        text=True
+    )
+
+    if result.returncode == 0:
+        print(f"{WHITE}{result.stdout}{RESET}")
+    else:
+        print(f"\n{RED}AWS CLI Error:")
+        print(f"{result.stderr}{RESET}")
+
+
 def list_users():
 
     clear_screen()
@@ -100,7 +114,7 @@ def list_users():
     print(f"{YELLOW}Retrieving IAM users...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        ["aws" , "iam", "list-users", "--query" , "Users[].{Username:UserName,UserID:UserId,Created:CreateDate}","--output", "table"],
         capture_output=True,
         text=True
     )
@@ -123,6 +137,8 @@ def create_user():
     print("         CREATE USER")
     print(f"============================{RESET}\n")
 
+    show_all_users()
+
     user_name = input(
         f"{BLUE}Enter a name for the new IAM user: {RESET}"
     ).strip()
@@ -130,7 +146,7 @@ def create_user():
     print(f"\n{YELLOW}Creating IAM user...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        ["aws","iam","create-user","--user-name",user_name,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -153,31 +169,37 @@ def delete_user():
     print("         DELETE USER")
     print(f"============================{RESET}\n")
 
-    print(f"{YELLOW}Retrieving IAM users...{RESET}\n")
+    # print(f"{YELLOW}Retrieving IAM users...{RESET}\n")
+    show_all_users()
 
-    # Add AWS CLI command here to display existing users
+    user_name = input(f"\n{BLUE}Enter the name of the IAM user to delete: {RESET}").strip()
 
-    user_name = input(
-        f"\n{BLUE}Enter the name of the IAM user to delete: {RESET}"
-    ).strip()
+    confirmation = input(f"{BLUE}Are you sure you want to continue? (y/n): {RESET}").strip().lower()
 
-    print(f"\n{YELLOW}Deleting IAM user...{RESET}\n")
+    if confirmation == "y":
+        print(f"\n{YELLOW}Deleting IAM user...{RESET}\n")
 
-    result = subprocess.run(
-        [],
-        capture_output=True,
-        text=True
-    )
+        result = subprocess.run(
+            ["aws","iam","delete-user","--user-name",user_name,"--output", "table"],
+            capture_output=True,
+            text=True
+        )
 
-    if result.returncode == 0:
-        print(f"{WHITE}{result.stdout}{RESET}")
-        print(f"\n{GREEN}{BOLD}✓ IAM user deleted successfully.{RESET}")
+        if result.returncode == 0:
+            print(f"{WHITE}{result.stdout}{RESET}")
+            print(f"\n{GREEN}{BOLD}✓ IAM user deleted successfully.{RESET}")
+        else:
+            print(f"\n{RED}AWS CLI Error:")
+            print(f"{result.stderr}{RESET}")
+
+        pause_and_clear()
+
     else:
-        print(f"\n{RED}AWS CLI Error:")
-        print(f"{result.stderr}{RESET}")
+        print(f"\n{YELLOW}User deletion cancelled.{RESET}")
 
-    pause_and_clear()
 
+def show_all_roles():
+    return
 
 def list_roles():
 
@@ -187,10 +209,11 @@ def list_roles():
     print("          LIST ROLES")
     print(f"============================{RESET}\n")
 
-    print(f"{YELLOW}Retrieving IAM roles...{RESET}\n")
+    # show_all_users()
 
     result = subprocess.run(
-        [],
+        # ["aws","iam","list-roles","--output", "table"],
+        ["aws", "iam", "list-roles", "--query", "Role[].{Role_Name:RoleName,ARN:Arn,Created:CreateDate}", "--output", "table"],
         capture_output=True,
         text=True
     )

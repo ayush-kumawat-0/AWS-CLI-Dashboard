@@ -4,7 +4,6 @@ import os
 import msvcrt
 
 
-# Terminal Colours
 RESET = "\033[0m"
 
 RED = "\033[91m"
@@ -17,19 +16,16 @@ GREY = "\033[90m"
 BOLD = "\033[1m"
 
 
-# Clear terminal screen
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
 
-# Pause before returning to the menu
 def pause_and_clear():
     print(f"\n{GREY}Press any key to continue...{RESET}")
     msvcrt.getch()
     clear_screen()
 
 
-# Display Lambda management menu
 def lambda_operations_list():
 
     clear_screen()
@@ -44,9 +40,9 @@ def lambda_operations_list():
             print(f"{WHITE}[1] List Functions")
             print("[2] Get Function")
             print("[3] Create Function")
-            print("[4] Invoke Function")
-            print("[5] Delete Function")
-            print("[6] Back to Main Menu")
+            # print("[4] Invoke Function")
+            print("[4] Delete Function")
+            print("[5] Back to Main Menu")
 
             print(f"{CYAN}======================================{RESET}")
 
@@ -63,13 +59,13 @@ def lambda_operations_list():
             elif choice == "3":
                 create_function()
 
-            elif choice == "4":
-                invoke_function()
+            # elif choice == "4":
+            #     invoke_function()
 
-            elif choice == "5":
+            elif choice == "4":
                 delete_function()
 
-            elif choice == "6":
+            elif choice == "5":
                 clear_screen()
                 break
 
@@ -92,7 +88,7 @@ def list_functions():
     print(f"{YELLOW}Retrieving Lambda functions...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        ["aws","lambda", "list-functions","--output", "table"],
         capture_output=True,
         text=True
     )
@@ -122,7 +118,7 @@ def get_function():
     print(f"\n{YELLOW}Retrieving Lambda function details...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        ["aws","lambda","get-function","--function-name", function_name,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -164,7 +160,8 @@ def create_function():
     print(f"\n{YELLOW}Creating Lambda function...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        # ["aws","lambda","create-function","--function-name", function_name,"--runtime", runtime,"--role", role_arn,"--handler", "lambda_function.lambda_handler","--zip-file", f"fileb://{zip_path}","--output", "table"],
+        ["aws","lambda","create-function","--function-name",function_name,"--runtime",runtime,"--zip-file",f"fileb://{zip_path}","--output","table"],
         capture_output=True,
         text=True
     )
@@ -179,38 +176,38 @@ def create_function():
     pause_and_clear()
 
 
-def invoke_function():
+# def invoke_function():
 
-    clear_screen()
+#     clear_screen()
 
-    print(f"\n{CYAN}{BOLD}============================")
-    print("        INVOKE FUNCTION")
-    print(f"============================{RESET}\n")
+#     print(f"\n{CYAN}{BOLD}============================")
+#     print("        INVOKE FUNCTION")
+#     print(f"============================{RESET}\n")
 
-    function_name = input(
-        f"{BLUE}Enter the name of the Lambda function to invoke: {RESET}"
-    ).strip()
+#     function_name = input(
+#         f"{BLUE}Enter the name of the Lambda function to invoke: {RESET}"
+#     ).strip()
 
-    payload = input(
-        f"{BLUE}Enter the JSON payload (leave empty for no input): {RESET}"
-    ).strip()
+#     payload = input(
+#         f"{BLUE}Enter the JSON payload (leave empty for no input): {RESET}"
+#     ).strip()
 
-    print(f"\n{YELLOW}Invoking Lambda function...{RESET}\n")
+#     print(f"\n{YELLOW}Invoking Lambda function...{RESET}\n")
 
-    result = subprocess.run(
-        [],
-        capture_output=True,
-        text=True
-    )
+#     result = subprocess.run(
+#         [],
+#         capture_output=True,
+#         text=True
+#     )
 
-    if result.returncode == 0:
-        print(f"{WHITE}{result.stdout}{RESET}")
-        print(f"\n{GREEN}{BOLD}✓ Lambda function invoked successfully.{RESET}")
-    else:
-        print(f"\n{RED}AWS CLI Error:")
-        print(f"{result.stderr}{RESET}")
+#     if result.returncode == 0:
+#         print(f"{WHITE}{result.stdout}{RESET}")
+#         print(f"\n{GREEN}{BOLD}✓ Lambda function invoked successfully.{RESET}")
+#     else:
+#         print(f"\n{RED}AWS CLI Error:")
+#         print(f"{result.stderr}{RESET}")
 
-    pause_and_clear()
+#     pause_and_clear()
 
 
 def delete_function():
@@ -223,8 +220,6 @@ def delete_function():
 
     print(f"{YELLOW}Retrieving Lambda functions...{RESET}\n")
 
-    # Add AWS CLI command here to display existing functions
-
     function_name = input(
         f"\n{BLUE}Enter the name of the Lambda function to delete: {RESET}"
     ).strip()
@@ -232,7 +227,7 @@ def delete_function():
     print(f"\n{YELLOW}Deleting Lambda function...{RESET}\n")
 
     result = subprocess.run(
-        [],
+        ["aws","lambda","delete-function","--function-name",function_name,"--output","table"],
         capture_output=True,
         text=True
     )

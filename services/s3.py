@@ -75,7 +75,7 @@ def show_all_buckets():
     print(f"{YELLOW}Fetching available buckets...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "s3api", "list-buckets", "--query", "Buckets[].[Name,CreationDate]"],
+        ["aws", "s3api", "list-buckets", "--query", "Buckets[].[Name,CreationDate]","--output", "table"] ,
         capture_output=True,
         text=True
     )
@@ -97,7 +97,7 @@ def list_buckets():
     print(f"\n{YELLOW}Showing buckets...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "s3api", "list-buckets", "--query", "Buckets[].[Name,CreationDate]"],
+        ["aws", "s3api", "list-buckets", "--query", "Buckets[].[Name,CreationDate]","--output", "table"],
         capture_output=True,
         text=True
     )
@@ -125,7 +125,7 @@ def create_bucket():
     print(f"\n{YELLOW}Creating your S3 bucket...{RESET}\n")
 
     result = subprocess.run(
-        ["aws", "s3", "mb", f"s3://{bucket_name}"],
+        ["aws", "s3", "mb", f"s3://{bucket_name}","--output", "table"],
         capture_output=True,
         text=True
     )
@@ -158,7 +158,7 @@ def delete_bucket():
         print(f"\n{YELLOW}Deleting your S3 bucket...{RESET}\n")
 
         result = subprocess.run(
-            ["aws", "s3", "rb", f"s3://{bucket_name}"],
+            ["aws", "s3", "rb", f"s3://{bucket_name}","--output", "table"],
             capture_output=True,
             text=True
         )
@@ -215,7 +215,7 @@ def show_all_objects(bucket_name):
 
     result = subprocess.run(
         # ["aws", "s3", "ls", f"s3://{bucket_name}"],
-        ["aws","s3api","list-objects","--bucket", f"{bucket_name}", "--query", "Contents[].{Key:Key,Last_Modified:LastModified,Size:Size}"],
+        ["aws","s3api","list-objects","--bucket", f"{bucket_name}", "--query", "Contents[].{Key:Key,Last_Modified:LastModified,Size:Size}","--output", "table"],
         capture_output=True,
         text=True
     )
@@ -250,7 +250,7 @@ def upload_object():
         # New command
         # --key = It is the path in s3, how it's stored (images/img.png)
         # --body =  It is the local path in my system (C:/Ayush/Doc/img.png)
-        ["aws" , "s3api" , "put-object", "--bucket",bucket_name,"--key",object_key,"--body",file_path ],
+        ["aws" , "s3api" , "put-object", "--bucket",bucket_name,"--key",object_key,"--body",file_path ,"--output", "table"],
         capture_output=True,
         text=True
     )
@@ -322,7 +322,7 @@ def delete_object():
 
         result = subprocess.run(
             # ["aws", "s3", "rm", f"s3://{bucket_name}/{object_key}"],
-            ["aws", "s3api", "delete-object", "--bucket", bucket_name, "--key",object_key],
+            ["aws", "s3api", "delete-object", "--bucket", bucket_name, "--key",object_key,"--output", "table"],
 
             capture_output=True,
             text=True
