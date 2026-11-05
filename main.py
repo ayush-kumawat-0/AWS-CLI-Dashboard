@@ -65,9 +65,9 @@ def main():
             print("2. S3")
             print("3. IAM")
             print("4. Lambda")
-            print("5. API Gateway")
-            print("6. Account Information")
-            print("7. Exit")
+            # print("5. API Gateway")
+            print("5. Account Information")
+            print("6. Exit")
             print(f"{CYAN}======================================{RESET}")
 
             choice = input(f"\n{BLUE}Enter your choice: {RESET}").strip()
@@ -88,14 +88,14 @@ def main():
                 print(f"\n{YELLOW}Lambda module coming next...{RESET}")
                 lambda_operations_list()
 
-            elif choice == "5":
-                print(f"\n{YELLOW}API Gateway module coming next...{RESET}")
-                apigateway_operations_list()
+            # elif choice == "5":
+            #     print(f"\n{YELLOW}API Gateway module coming next...{RESET}")
+            #     apigateway_operations_list()
 
-            elif choice == "6":
+            elif choice == "5":
                 account_information()
 
-            elif choice == "7":
+            elif choice == "6":
                 print(f"\n{RED}Exiting AWS Automation Dashboard...{RESET}")
                 break
 
@@ -105,6 +105,7 @@ def main():
     except KeyboardInterrupt:
         print(f"\n\n{YELLOW}Dashboard interrupted by user.{RESET}")
         print(f"{RED}Exiting AWS Automation Dashboard...{RESET}")
+        raise SystemExit(0)
 
 
 if __name__ == "__main__":

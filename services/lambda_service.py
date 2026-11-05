@@ -70,7 +70,7 @@ def lambda_operations_list():
                 break
 
             else:
-                print(f"\n{RED}Invalid choice. Enter 1-6.{RESET}")
+                print(f"\n{RED}Invalid choice. Enter 1-5.{RESET}")
 
     except KeyboardInterrupt:
         print(f"\n\n{YELLOW}Lambda menu interrupted by user.{RESET}")
@@ -118,7 +118,7 @@ def get_function():
     print(f"\n{YELLOW}Retrieving Lambda function details...{RESET}\n")
 
     result = subprocess.run(
-        ["aws","lambda","get-function","--function-name", function_name,"--output", "table"],
+        ["aws","lambda","get-function","--function-name", function_name],
         capture_output=True,
         text=True
     )
@@ -156,12 +156,15 @@ def create_function():
     zip_path = input(
         f"{BLUE}Enter the path to the deployment ZIP file: {RESET}"
     ).strip()
+    handler = input(
+        f"{BLUE}Enter the handler function name: {RESET}"
+    ).strip()
 
     print(f"\n{YELLOW}Creating Lambda function...{RESET}\n")
 
     result = subprocess.run(
         # ["aws","lambda","create-function","--function-name", function_name,"--runtime", runtime,"--role", role_arn,"--handler", "lambda_function.lambda_handler","--zip-file", f"fileb://{zip_path}","--output", "table"],
-        ["aws","lambda","create-function","--function-name",function_name,"--runtime",runtime,"--zip-file",f"fileb://{zip_path}","--output","table"],
+        ["aws","lambda","create-function","--function-name",function_name,"--runtime",runtime,"--zip-file",f"fileb://{zip_path}","--role", role_arn,"--handler", handler,"--output","table"],
         capture_output=True,
         text=True
     )
